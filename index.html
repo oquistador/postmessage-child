@@ -26,6 +26,9 @@
             form {
                 text-align: right;
                 width: 400px;
+                box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.3);
+                background: white;
+                padding: 0 1rem;
             }
 
             button,
@@ -61,16 +64,18 @@
                 <input type="text" placeholder="target origin" id="origin" value="*">
             </div>
             <div class="row">
-                <button type="button" id="send-button">Send</button>
+                <button type="submit" id="send-button">Send</button>
             </div>
         </form>
         <script>
-            const sendEl = document.querySelector('#send-button');
+            const formEl = document.querySelector('form');
             const messageEl = document.querySelector('#message');
             const jsonEl = document.querySelector('#json');
             const originEl = document.querySelector('#origin');
 
-            sendEl.addEventListener('click', () => {
+            formEl.addEventListener('submit', event => {
+                event.preventDefault();
+                
                 window.parent.postMessage(
                     jsonEl.checked ? JSON.parse(messageEl.value) : messageEl.value,
                     originEl.value
