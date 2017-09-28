@@ -13,10 +13,6 @@
             body {
                 height: 100%;
                 margin: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
             }
 
             * {
@@ -28,7 +24,8 @@
                 width: 400px;
                 box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.3);
                 background: white;
-                padding: 0 1rem;
+                padding: 1rem 1rem 0;
+                margin: 0 auto;
             }
 
             button,
@@ -48,7 +45,7 @@
             }
 
             .row {
-                margin: 1rem 0;
+                padding-bottom: 1rem;
             }
         </style>
     </head>
@@ -75,7 +72,7 @@
 
             formEl.addEventListener('submit', event => {
                 event.preventDefault();
-                
+
                 window.parent.postMessage(
                     jsonEl.checked ? JSON.parse(messageEl.value) : messageEl.value,
                     originEl.value
