@@ -5,13 +5,11 @@
         <title>PostMessage Child</title>
         <style type="text/css">
             html {
-                height: 100%;
                 font-size: 16px;
                 font-family: sans-serif;
             }
 
             body {
-                height: 100%;
                 margin: 0;
             }
 
@@ -25,7 +23,7 @@
                 box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.3);
                 background: white;
                 padding: 1rem 1rem 0;
-                margin: 0 auto;
+                margin: 50px auto;
             }
 
             button,
@@ -52,13 +50,13 @@
     <body>
         <form>
             <div class="row">
-                <textarea id="message" placeholder="message" autofocus></textarea>
+                <textarea id="message" placeholder="Message" autofocus></textarea>
             </div>
             <div class="row">
                 <label for="json">JSON</label><input type="checkbox" id="json">
             </div>
             <div class="row">
-                <input type="text" placeholder="target origin" id="origin" value="*">
+                <input type="text" placeholder='Target Origin (defaults to "*")' id="origin">
             </div>
             <div class="row">
                 <button type="submit" id="send-button">Send</button>
@@ -75,7 +73,7 @@
 
                 window.parent.postMessage(
                     jsonEl.checked ? JSON.parse(messageEl.value) : messageEl.value,
-                    originEl.value
+                    originEl.value || '*'
                 );
             });
         </script>
