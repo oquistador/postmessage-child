@@ -10,6 +10,7 @@
             }
 
             body {
+                color: rgba(0, 0, 0, 0.8);
                 margin: 0;
             }
 
@@ -18,11 +19,10 @@
             }
 
             form {
-                text-align: right;
-                width: 400px;
+                width: 480px;
                 box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.3);
                 background: white;
-                padding: 1rem 1rem 0;
+                padding: 1rem;
                 margin: 50px auto;
             }
 
@@ -44,6 +44,7 @@
 
             .row {
                 padding-bottom: 1rem;
+                text-align: right;
             }
         </style>
     </head>
@@ -61,21 +62,81 @@
             <div class="row">
                 <button type="submit" id="send-button">Send</button>
             </div>
+            <hr>
+            <p>
+                <strong>Pro tip:</strong> You can prepopulate this form via the query string parameters:
+                <strong>message</strong>, <strong>json</strong>, and
+                <strong>origin</strong>.
+            </p>
+            <div class="row">
+                <button type="button" id="generate">Generate URL from Data</button>
+            </div>
+            <div class="row">
+                <input type="text" readonly id="url">
+            </div>
         </form>
         <script>
-            const formEl = document.querySelector('form');
-            const messageEl = document.querySelector('#message');
-            const jsonEl = document.querySelector('#json');
-            const originEl = document.querySelector('#origin');
+            (function() {
+                'use strict';
 
-            formEl.addEventListener('submit', event => {
-                event.preventDefault();
+                const formEl = document.querySelector('form');
+                const messageEl = document.querySelector('#message');
+                const jsonEl = document.querySelector('#json');
+                const originEl = document.querySelector('#origin');
+                const generateEl = document.querySelector('#generate');
+                const urlEl = document.querySelector('#url');
 
-                window.parent.postMessage(
-                    jsonEl.checked ? JSON.parse(messageEl.value) : messageEl.value,
-                    originEl.value || '*'
-                );
-            });
+                const params = window.location.search
+                    .split('&')
+                    .reduce((paramsObject, queryString) => {
+                        const matches = queryString.match(/\??([^=]*)=([^&]*)/);
+
+                        if (matches) {
+                            paramsObject[
+                                window.decodeURIComponent(matches[1])
+                            ] = window.decodeURIComponent(matches[2]);
+                        }
+
+                        return paramsObject;
+                    }, {});
+
+                messageEl.value = params.message || '';
+                jsonEl.checked = params.json;
+                originEl.value = params.origin || '';
+
+                formEl.addEventListener('submit', event => {
+                    event.preventDefault();
+
+                    window.parent.postMessage(
+                        jsonEl.checked ? JSON.parse(messageEl.value) : messageEl.value,
+                        originEl.value || '*'
+                    );
+                });
+
+                generateEl.addEventListener('click', () => {
+                    const message = window.encodeURIComponent(messageEl.value);
+                    const origin = window.encodeURIComponent(originEl.value);
+                    const params = [];
+
+                    if (message) {
+                        params.push(`message=${message}`);
+                    }
+
+                    if (jsonEl.checked) {
+                        params.push('json=1');
+                    }
+
+                    if (origin) {
+                        params.push(`origin=${origin}`);
+                    }
+
+                    if (params.length) {
+                        urlEl.value = `${window.location.origin}${window.location.pathname}?${params.join('&')}`;
+                    } else {
+                        urlEl.value = '';
+                    }
+                });
+            }());
         </script>
     </body>
 </html>
